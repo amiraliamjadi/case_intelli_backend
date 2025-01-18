@@ -1,6 +1,6 @@
 from flask import Flask
 from .extensions import db
-from .routes import main  # Import the Blueprint
+from .routes import main
 
 def create_app():
     app = Flask(__name__)
@@ -8,7 +8,7 @@ def create_app():
     # Load configuration
     app.config.from_object("config.DevelopmentConfig")
 
-    # Initialize extensions
+    # Initialize extensions like database
     db.init_app(app)
 
     # Register Blueprints
