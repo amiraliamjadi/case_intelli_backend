@@ -1,0 +1,31 @@
+{% extends 'dashboard/base.html' %}
+
+{% block content %}
+<h1>Categories</h1>
+<a href="" class="btn btn-primary">Add Category</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for category in categories %}
+        <tr>
+            <td>{{ category.id }}</td>
+            <td>{{ category.name }}</td>
+            <td>{{ category.description }}</td>
+            <td>
+                <a href="" class="btn btn-warning">Edit</a>
+                <form action="" method="POST" style="display:inline;">
+                    <button type="submit" class="btn btn-danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
