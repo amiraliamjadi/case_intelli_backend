@@ -1,5 +1,6 @@
 from app import create_app  # Import the application factory function
 
+
 # Create the Flask app instance
 app = create_app()
 

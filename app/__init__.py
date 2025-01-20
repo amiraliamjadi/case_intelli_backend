@@ -1,7 +1,9 @@
 from flask import Flask
 from .extensions import db
 from .routes import main
+from .routes import register_routes
 from flask_migrate import Migrate
+
 
 def create_app():
 
@@ -17,6 +19,9 @@ def create_app():
 
     # Initialize Migrate
     migrate = Migrate(app, db)
+
+    # Register routes
+    register_routes(app)
 
 
     # Register Blueprints for routes

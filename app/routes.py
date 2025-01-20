@@ -1,6 +1,8 @@
 from flask import Blueprint, render_template
 from .extensions import db
-from app.models import User
+from flask_restful import Api
+from app.resources import *
+
 
 # Define a Blueprint
 main = Blueprint("main", __name__)
@@ -9,16 +11,7 @@ main = Blueprint("main", __name__)
 def index():
     return render_template("index.html")
 
-# Example usage (in a route or other function)
-@main.route('/about')
-def about():
-    # Example: Create a new user
-    new_user = User(username='testuser3', email='test3@example.com', password='12345')
-    db.session.add(new_user)
-    db.session.commit()
 
-    # Example: Query users
-    users = User.query.all()
-    user_names = [user.username for user in users]
-
-    return f"Users: {user_names}"
+def register_routes(app):
+    api = Api(app)
+    api.add_resource(CategoryResource, "/categories", "/categories/<int:category_id>")
