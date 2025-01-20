@@ -10,6 +10,7 @@ class CategoryModel(db.Model):
     Code = db.Column(db.String(64), unique=True, nullable=False)
     Name = db.Column(db.String(256), unique=True, nullable=False)
     PricingMethod = db.Column(db.String(256), nullable=True)
+    Parts = db.relationship("PartModel", back_populates="Category")
 
     def json(self):
         return {
@@ -46,6 +47,7 @@ class UnitModel(db.Model):
     UnitID = db.Column(db.Integer, primary_key=True)
     Name = db.Column(db.String(256), unique=True, nullable=False)
     AbbreviatedName = db.Column(db.String(256), nullable=True)
+    Parts = db.relationship("PartModel", back_populates="Unit")
 
     def json(self):
         return {
@@ -125,6 +127,7 @@ class StorePositionModel(db.Model):
     Name = db.Column(db.String(256), unique=True, nullable=False)
     StoreID = db.Column(db.Integer, db.ForeignKey("LGS.Store.StoreID"), nullable=False)
     store = db.relationship("StoreModel", back_populates="positions")
+    Parts = db.relationship("PartModel", back_populates="StorePosition")
 
     def json(self):
         return {
@@ -255,3 +258,60 @@ class UserModel(db.Model):
         """Delete the user from the database."""
         db.session.delete(self)
         db.session.commit()
+
+class PartModel(db.Model):
+    __tablename__ = "LGS.Part"
+
+    PartID = db.Column(db.Integer, primary_key=True)
+    Code = db.Column(db.String(64), unique=True, nullable=False)
+    Name = db.Column(db.String(256), unique=True, nullable=False)
+    UnitRef = db.Column(db.Integer, db.ForeignKey("GNR.Unit.UnitID"), nullable=True)
+    CategoryRef = db.Column(db.Integer, db.ForeignKey("LGS.Category.CategoryID"), nullable=False)
+    StorePositionRef = db.Column(db.Integer, db.ForeignKey("LGS.StorePosition.StorePositionID"), nullable=False)
+    QRCode = db.Column(db.Text, nullable=True)
+    QRCodeImage = db.Column(db.String(256), nullable=True)
+    Quantity = db.Column(db.Integer, nullable=False, default=1)
+    Image = db.Column(db.String(200), nullable=True)
+
+     # Relationships
+    Unit = db.relationship("UnitModel", back_populates="Parts")
+    Category = db.relationship("CategoryModel", back_populates="Parts")
+    StorePosition = db.relationship("StorePositionModel", back_populates="Parts")
+
+
+    def json(self):
+        return {
+            "PartID": self.PartID,
+            "Code": self.Code,
+            "Name": self.Name,
+            "UnitRef": self.UnitRef,
+            "CategoryRef": self.CategoryRef,
+            "StorePositionRef": self.StorePositionRef,
+            "QRCode": self.QRCode,
+            "QRCodeImage": self.QRCodeImage,
+            "Quantity": self.Quantity,
+            "Image": self.Image,
+            "Unit": self.Unit.Name if self.Unit else None,
+            "Category": self.Category.Name if self.Category else None,
+            "StorePosition": self.StorePosition.Name if self.StorePosition else None
+        }
+
+    @classmethod
+    def find_by_name(self, name):
+        return self.query.filter_by(Name=name).first()
+
+    @classmethod
+    def find_all(self):
+        return self.query.all()
+
+    def save_to_db(self):
+        db.session.add(self)
+        db.session.commit()
+
+    def delete_from_db(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    @classmethod
+    def find_filter_by(self, page=1, pageSize=10, orderBy="", **kwargs):
+        return self.query.filter_by(**kwargs).order_by(text(orderBy)).paginate(page=page, per_page=pageSize)

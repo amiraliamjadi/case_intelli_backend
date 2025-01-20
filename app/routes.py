@@ -21,3 +21,4 @@ def register_routes(app):
     api.add_resource(StorePositionResource, '/store-positions', '/store-positions/<position_id>')
     api.add_resource(PartyResource, '/parties', '/parties/<int:party_id>')
     api.add_resource(UserResource, '/users', '/users/<int:user_id>')
+    api.add_resource(PartResource, '/parts', '/parts/<int:part_id>')

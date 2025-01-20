@@ -2,3 +2,5 @@ flask
 Flask-SQLAlchemy
 flask-migrate
 flask-restful
+qrcode
+Pillow
