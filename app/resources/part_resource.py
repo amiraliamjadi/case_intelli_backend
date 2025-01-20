@@ -90,8 +90,13 @@ class PartResource(Resource):
             return {"message": "Part not found"}, 404
 
         try:
+            # Delete QR code image if it exists
+            if part.QRCodeImage and os.path.exists(part.QRCodeImage):
+                os.remove(part.QRCodeImage)
+
+            # Delete part from the database
             part.delete_from_db()
         except Exception as e:
             return {"message": f"An error occurred: {str(e)}"}, 500
 
-        return {"message": "Part deleted"}, 200
+        return {"message": "Part and associated QR code image deleted"}, 200
