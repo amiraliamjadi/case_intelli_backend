@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow">
+                <div class="card-body">
+                    <!-- Part Title -->
+                    <h2 class="card-title text-center text-primary" id="part-title">Loading...</h2>
+
+                    <!-- Part Image -->
+                    <div class="text-center">
+                        <img src="" alt="Part Image" class="img-fluid rounded mb-4" id="part-image" style="max-width: 300px; height: auto;">
+                    </div>
+
+                    <!-- Quantity Section -->
+                    <div class="quantity-section text-center mb-4">
+                        <h4 class="text-secondary">Manage Quantity</h4>
+                        <div class="quantity-control d-inline-flex align-items-center mb-3">
+                            <button class="btn btn-outline-primary btn-sm px-3 me-2" id="decrease-quantity">−</button>
+                            <input type="text" id="part-quantity" class="form-control text-center fw-bold fs-5" value="Loading..." 
+                                style="width: 80px; display: inline-block;" readonly>
+                            <button class="btn btn-outline-primary btn-sm px-3 ms-2" id="increase-quantity">+</button>
+                        </div>
+                        <button class="btn btn-success btn-sm px-4" id="submit-quantity">Submit</button>
+                        <p class="mt-2 text-muted" id="quantity-feedback" style="display: none;">Quantity updated successfully!</p>
+                    </div>
+
+                    <!-- Part Details -->
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item" id="part-code"><strong>Code:</strong> Loading...</li>
+                        <li class="list-group-item" id="part-category"><strong>Category:</strong> Loading...</li>
+                        <li class="list-group-item" id="part-unit"><strong>Unit:</strong> Loading...</li>
+                        <li class="list-group-item" id="part-store-position"><strong>Store Position:</strong> Loading...</li>
+                    </ul>
+
+                    <!-- QR Code -->
+                    <div class="text-center mt-4">
+                        <img src="" alt="QR Code" class="img-thumbnail" id="qr-code" style="width: 140px; height: 140px;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+    function getPartIdFromUrl() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get('partId');
+    }
+
+    const partId = getPartIdFromUrl();
+    const apiUrl = `/parts/${partId}`;
+
+    async function fetchPartDetails() {
+        try {
+            const response = await axios.get(apiUrl);
+            const part = response.data;
+
+            document.getElementById('part-title').textContent = part.Name || 'No Name';
+            document.getElementById('part-image').src = "/static/images/parts/" + (part.Image || 'placeholder.png');
+            document.getElementById('part-code').innerHTML = `<strong>Code:</strong> ${part.Code || 'N/A'}`;
+            document.getElementById('part-quantity').value = part.Quantity || '0';
+            document.getElementById('part-category').innerHTML = `<strong>Category:</strong> ${part.Category || 'N/A'}`;
+            document.getElementById('part-unit').innerHTML = `<strong>Unit:</strong> ${part.Unit || 'N/A'}`;
+            document.getElementById('part-store-position').innerHTML = `<strong>Store Position:</strong> ${part.StorePosition || 'N/A'}`;
+            document.getElementById('qr-code').src = "/static/images/qrcodes/" + (part.QRCodeImage || 'placeholder_qr.png');
+        } catch (error) {
+            console.error(error);
+            document.getElementById('part-title').textContent = 'Error';
+        }
+    }
+
+    // Quantity control handlers
+    document.getElementById('decrease-quantity').addEventListener('click', () => {
+        const quantityElement = document.getElementById('part-quantity');
+        let quantity = parseInt(quantityElement.value) || 0;
+        if (quantity > 0) quantity--;
+        quantityElement.value = quantity;
+    });
+
+    document.getElementById('increase-quantity').addEventListener('click', () => {
+        const quantityElement = document.getElementById('part-quantity');
+        let quantity = parseInt(quantityElement.value) || 0;
+        quantity++;
+        quantityElement.value = quantity;
+    });
+
+    document.getElementById('submit-quantity').addEventListener('click', async () => {
+        const quantity = parseInt(document.getElementById('part-quantity').value) || 0;
+        try {
+            await axios.post(apiUrl, { Quantity: quantity });
+            const feedback = document.getElementById('quantity-feedback');
+            feedback.textContent = "Quantity updated successfully!";
+            feedback.style.display = "block";
+            setTimeout(() => { feedback.style.display = "none"; }, 3000);
+        } catch (error) {
+            console.error(error);
+            alert('Failed to update quantity.');
+        }
+    });
+
+    if (partId) {
+        fetchPartDetails();
+    } else {
+        document.getElementById('part-title').textContent = 'Error';
+    }
+</script>
+{% endblock %}

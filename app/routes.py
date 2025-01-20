@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, render_template, request
 from .extensions import db
 from flask_restful import Api
 from app.resources import *
@@ -23,9 +23,13 @@ def login():
 def search():
     return render_template("search.html")
 
-@main.route("/parts/<int:part_id>")
-def part(part_id):
-    return render_template("part.html")
+@main.route('/part-details')
+def part_details():
+    part_id = request.args.get('partId')  # Retrieve partId from the URL query string
+    if part_id:
+        return render_template('part.html', partId=part_id)
+    else:
+        return "Part ID is required.", 400
 
 
 

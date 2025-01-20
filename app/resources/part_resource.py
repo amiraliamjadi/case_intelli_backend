@@ -41,13 +41,14 @@ class PartResource(Resource):
 
             # Generate QR code
             qr_value = part.PartID
+            qr_value = f"https://127.0.0.1:5002/part-details?partId={qr_value}"
             qr = qrcode.make(qr_value)
             qr_file_path = os.path.join(self.QR_IMAGE_PATH, f"part_{part.PartID}.png")
             qr.save(qr_file_path)
 
             # Update part with QR code data
             part.QRCode = qr_value
-            part.QRCodeImage = qr_file_path
+            part.QRCodeImage = f"part_{part.PartID}.png"
             part.save_to_db()
         except Exception as e:
             return {"message": f"An error occurred: {str(e)}"}, 500
@@ -90,8 +91,9 @@ class PartResource(Resource):
             return {"message": "Part not found"}, 404
 
         try:
+            qr_file_path = os.path.join(self.QR_IMAGE_PATH, part.QRCodeImage)
             # Delete QR code image if it exists
-            if part.QRCodeImage and os.path.exists(part.QRCodeImage):
+            if qr_file_path and os.path.exists(part.QRCodeImage):
                 os.remove(part.QRCodeImage)
 
             # Delete part from the database
