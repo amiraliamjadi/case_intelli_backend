@@ -1,17 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>{% block title %}My App{% endblock %}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}DIT smart inventory portal{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <style>
+        .navbar {
+            background-color: #343a40; /* Darker background color */
+            padding-left: 15px; /* Add padding to left */
+            padding-right: 15px; /* Add padding to right */
+        }
+        .navbar-brand img {
+            max-height: 80px; /* Limit the logo height without stretching */
+            width: auto; /* Maintain aspect ratio */
+        }
+        .navbar-nav {
+            margin-left: auto; /* Align navbar items to the right */
+        }
+        .nav-link {
+            color: #ffffff !important; /* Make nav links white */
+            margin-right: 15px; /* Add spacing between links */
+            transition: color 0.3s ease; /* Smooth transition for hover */
+        }
+        .nav-link:hover {
+            color: #17a2b8 !important; /* Change to teal on hover */
+        }
+        .navbar-toggler {
+            border: none; /* Remove border around toggle */
+        }
+        .form-control {
+            border-radius: 20px; /* Rounded search bar */
+        }
+        .btn-outline-success {
+            border-radius: 20px; /* Rounded search button */
+            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+        }
+        .btn-outline-success:hover {
+            background-color: #17a2b8; /* Teal background on hover */
+            color: white; /* White text on hover */
+        }
+    </style>
+    {% block extra_head %}{% endblock %}
 </head>
 <body>
-    <header>
-        <h1>header</h1>
-    </header>
-    <main>
-        {% block content %}{% endblock %}
-    </main>
-    <footer>
-        <h1>footer</h1>
-    </footer>
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="dashboard.html">Dashboard</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Items
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <li><a class="dropdown-item" href="crud/categories">Category</a></li>
+                        <li><a class="dropdown-item" href="crud/units">Unit</a></li>
+                        <li><a class="dropdown-item" href="crud/stores">Store</a></li>
+                        <li><a class="dropdown-item" href="crud/storepositions">Store position</a></li>
+                        <li><a class="dropdown-item" href="crud/parties">Party</a></li>
+                        <li><a class="dropdown-item" href="crud/users">User</a></li>
+                        <li><a class="dropdown-item" href="crud/parts">Part</a></li>
+                    </ul>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="profile.html">Profile</a>
+                </li>
+            </ul>
+            <form class="d-flex ms-3">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="container mt-4">
+    {% block content %}{% endblock %}
+</div>
+
+<!-- Footer -->
+<footer class="footer mt-auto py-3 bg-light">
+    <div class="container text-center">
+        <span class="text-muted">Group 2 WS24-25</span>
+    </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/axios.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+{% block extra_scripts %}{% endblock %}
 </body>
 </html>
