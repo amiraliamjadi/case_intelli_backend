@@ -12,6 +12,7 @@ def index():
     return render_template("index.html")
 
 
+# Register routes for APIs using Flask-RESTful
 def register_routes(app):
     api = Api(app)
     api.add_resource(CategoryResource, "/categories", "/categories/<int:category_id>")
