@@ -9,38 +9,53 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         .navbar {
-            background-color: #343a40; /* Darker background color */
-            padding-left: 15px; /* Add padding to left */
-            padding-right: 15px; /* Add padding to right */
+            background-color: #343a40;
+            padding: 10px 15px;
         }
         .navbar-brand img {
-            max-height: 80px; /* Limit the logo height without stretching */
-            width: auto; /* Maintain aspect ratio */
+            max-height: 80px;
+            width: auto;
         }
-        .navbar-nav {
-            margin-left: auto; /* Align navbar items to the right */
+        .hamburger {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: #ffffff;
+            border: none;
+            background: none;
         }
-        .nav-link {
-            color: #ffffff !important; /* Make nav links white */
-            margin-right: 15px; /* Add spacing between links */
-            transition: color 0.3s ease; /* Smooth transition for hover */
+        .hamburger:focus {
+            outline: none;
         }
-        .nav-link:hover {
-            color: #17a2b8 !important; /* Change to teal on hover */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            right: -250px;
+            width: 250px;
+            height: 100%;
+            background-color: #343a40;
+            overflow-y: auto;
+            transition: right 0.3s ease;
+            z-index: 1050;
         }
-        .navbar-toggler {
-            border: none; /* Remove border around toggle */
+        .sidebar.active {
+            right: 0;
         }
-        .form-control {
-            border-radius: 20px; /* Rounded search bar */
+        .sidebar a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px 20px;
+            display: block;
+            transition: background-color 0.3s ease;
         }
-        .btn-outline-success {
-            border-radius: 20px; /* Rounded search button */
-            transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transition */
+        .sidebar a:hover {
+            background-color: #17a2b8;
         }
-        .btn-outline-success:hover {
-            background-color: #17a2b8; /* Teal background on hover */
-            color: white; /* White text on hover */
+        .sidebar .close-btn {
+            font-size: 1.5rem;
+            color: #ffffff;
+            padding: 10px 20px;
+            text-align: right;
+            cursor: pointer;
         }
     </style>
     {% block extra_head %}{% endblock %}
@@ -48,44 +63,28 @@
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark">
+<nav class="navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="/">
             <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="d-inline-block align-text-top">
         </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
+        <button class="hamburger" id="hamburger-menu">
+            <i class="bi bi-list"></i>
         </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="dashboard.html">Dashboard</a>
-                </li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        Items
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="crud/categories">Category</a></li>
-                        <li><a class="dropdown-item" href="crud/units">Unit</a></li>
-                        <li><a class="dropdown-item" href="crud/stores">Store</a></li>
-                        <li><a class="dropdown-item" href="crud/storepositions">Store position</a></li>
-                        <li><a class="dropdown-item" href="crud/parties">Party</a></li>
-                        <li><a class="dropdown-item" href="crud/users">User</a></li>
-                        <li><a class="dropdown-item" href="crud/parts">Part</a></li>
-                    </ul>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="profile.html">Profile</a>
-                </li>
-            </ul>
-            <form class="d-flex ms-3">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                <button class="btn btn-outline-success" type="submit">Search</button>
-            </form>
-        </div>
     </div>
 </nav>
+
+<!-- Sidebar -->
+<div class="sidebar" id="sidebar">
+    <div class="close-btn" id="close-sidebar">&times;</div>
+    <a href="crud/categories" class="sidebar-link"><i class="bi bi-box"></i> Category</a>
+    <a href="crud/units" class="sidebar-link"><i class="bi bi-rulers"></i> Unit</a>
+    <a href="crud/stores" class="sidebar-link"><i class="bi bi-shop"></i> Store</a>
+    <a href="crud/storepositions" class="sidebar-link"><i class="bi bi-geo-alt"></i> Store Position</a>
+    <a href="crud/parties" class="sidebar-link"><i class="bi bi-people"></i> Party</a>
+    <a href="crud/users" class="sidebar-link"><i class="bi bi-person"></i> User</a>
+    <a href="crud/parts" class="sidebar-link"><i class="bi bi-gear"></i> Part</a>
+</div>
 
 <!-- Main Content -->
 <div class="container mt-4">
@@ -98,6 +97,32 @@
         <span class="text-muted">Group 2 WS24-25</span>
     </div>
 </footer>
+
+<script>
+    const hamburgerMenu = document.getElementById('hamburger-menu');
+    const sidebar = document.getElementById('sidebar');
+    const closeSidebar = document.getElementById('close-sidebar');
+    const sidebarLinks = document.querySelectorAll('.sidebar-link');
+
+    hamburgerMenu.addEventListener('click', () => {
+        sidebar.classList.add('active');
+    });
+
+    closeSidebar.addEventListener('click', () => {
+        sidebar.classList.remove('active');
+    });
+
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (event) => {
+            event.preventDefault();
+            const newHref = link.getAttribute('href');
+            if (newHref) {
+                window.history.replaceState(null, null, '/');
+                window.location.href = newHref;
+            }
+        });
+    });
+</script>
 
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/axios.min.js') }}"></script>

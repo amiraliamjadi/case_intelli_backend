@@ -92,7 +92,7 @@
     document.getElementById('submit-quantity').addEventListener('click', async () => {
         const quantity = parseInt(document.getElementById('part-quantity').value) || 0;
         try {
-            await axios.post(apiUrl, { Quantity: quantity });
+            await axios.put(apiUrl, { Quantity: quantity });
             const feedback = document.getElementById('quantity-feedback');
             feedback.textContent = "Quantity updated successfully!";
             feedback.style.display = "block";

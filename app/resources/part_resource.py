@@ -41,7 +41,7 @@ class PartResource(Resource):
 
             # Generate QR code
             qr_value = part.PartID
-            qr_value = f"https://127.0.0.1:5002/part-details?partId={qr_value}"
+            qr_value = f"http://127.0.0.1:5002/part-details?partId={qr_value}"
             qr = qrcode.make(qr_value)
             qr_file_path = os.path.join(self.QR_IMAGE_PATH, f"part_{part.PartID}.png")
             qr.save(qr_file_path)

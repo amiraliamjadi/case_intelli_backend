@@ -15,6 +15,7 @@ COPY . .
 
 # Expose the port the app runs on
 EXPOSE 5000
+EXPOSE 5002
 
 ENTRYPOINT ["python3"]
 CMD ["run.py"]

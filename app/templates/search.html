@@ -1,0 +1,42 @@
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchResultsContainer = document.getElementById('search-results');
+
+        // Safely parse and validate sessionStorage data
+        let searchResults;
+        try {
+            searchResults = JSON.parse(sessionStorage.getItem('searchResults')) || [];
+        } catch (error) {
+            console.error("Failed to parse search results:", error);
+            searchResults = [];
+        }
+
+        // Check if searchResults is an array
+        if (Array.isArray(searchResults) && searchResults.length > 0) {
+            searchResults.forEach(part => {
+                const card = `
+                    <div class="col-md-4 mb-4">
+                        <div class="card h-100 shadow">
+                            <img src="/static/images/parts/${part.Image || 'placeholder.png'}" 
+                                 class="card-img-top" alt="${part.Name}">
+                            <div class="card-body">
+                                <h5 class="card-title">${part.Name}</h5>
+                                <p class="card-text"><strong>Quantity:</strong> ${part.Quantity || 0}</p>
+                                <p class="card-text"><strong>Store Position:</strong> ${part.StorePosition || 'N/A'}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                searchResultsContainer.innerHTML += card;
+            });
+        } else {
+            searchResultsContainer.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        No parts found matching your search.
+                    </div>
+                </div>
+            `;
+        }
+    });
+</script>
